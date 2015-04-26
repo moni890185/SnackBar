@@ -47,7 +47,8 @@ class SnackContainer extends FrameLayout {
     SnackContainer(ViewGroup container) {
         super(container.getContext());
 
-        container.addView(this, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        container.addView(this, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
         setVisibility(View.GONE);
         setId(R.id.snackContainer);
         init();
@@ -56,11 +57,10 @@ class SnackContainer extends FrameLayout {
     private void init() {
         mInAnimationSet = new AnimationSet(false);
 
-        TranslateAnimation mSlideInAnimation = new TranslateAnimation(
-                TranslateAnimation.RELATIVE_TO_PARENT, 0.0f,
-                TranslateAnimation.RELATIVE_TO_PARENT, 0.0f,
-                TranslateAnimation.RELATIVE_TO_SELF, 1.0f,
-                TranslateAnimation.RELATIVE_TO_SELF, 0.0f);
+        TranslateAnimation mSlideInAnimation =
+                new TranslateAnimation(TranslateAnimation.RELATIVE_TO_PARENT, 0.0f,
+                        TranslateAnimation.RELATIVE_TO_PARENT, 0.0f, TranslateAnimation.RELATIVE_TO_SELF, 1.0f,
+                        TranslateAnimation.RELATIVE_TO_SELF, 0.0f);
 
         AlphaAnimation mFadeInAnimation = new AlphaAnimation(0.0f, 1.0f);
 
@@ -69,11 +69,10 @@ class SnackContainer extends FrameLayout {
 
         mOutAnimationSet = new AnimationSet(false);
 
-        TranslateAnimation mSlideOutAnimation = new TranslateAnimation(
-                TranslateAnimation.RELATIVE_TO_PARENT, 0.0f,
-                TranslateAnimation.RELATIVE_TO_PARENT, 0.0f,
-                TranslateAnimation.RELATIVE_TO_SELF, 0.0f,
-                TranslateAnimation.RELATIVE_TO_SELF, 1.0f);
+        TranslateAnimation mSlideOutAnimation =
+                new TranslateAnimation(TranslateAnimation.RELATIVE_TO_PARENT, 0.0f,
+                        TranslateAnimation.RELATIVE_TO_PARENT, 0.0f, TranslateAnimation.RELATIVE_TO_SELF, 0.0f,
+                        TranslateAnimation.RELATIVE_TO_SELF, 1.0f);
 
         AlphaAnimation mFadeOutAnimation = new AlphaAnimation(1.0f, 0.0f);
 
@@ -118,9 +117,9 @@ class SnackContainer extends FrameLayout {
         mSnacks.clear();
     }
 
-    /*
-     * Q Management *
-     */
+/*
+* Q Management *
+*/
 
     public boolean isEmpty() {
         return mSnacks.isEmpty();
@@ -140,9 +139,9 @@ class SnackContainer extends FrameLayout {
         if (animate) mHideRunnable.run();
     }
 
-    /*
-     * Showing Logic *
-     */
+/*
+* Showing Logic *
+*/
 
     public boolean isShowing() {
         return !mSnacks.isEmpty();
@@ -157,8 +156,8 @@ class SnackContainer extends FrameLayout {
         showSnack(snack, snackView, listener, false);
     }
 
-
-    public void showSnack(Snack snack, View snackView, OnVisibilityChangeListener listener, boolean immediately) {
+    public void showSnack(Snack snack, View snackView, OnVisibilityChangeListener listener,
+                          boolean immediately) {
         if (snackView.getParent() != null && snackView.getParent() != this) {
             ((ViewGroup) snackView.getParent()).removeView(snackView);
         }
@@ -190,9 +189,21 @@ class SnackContainer extends FrameLayout {
 
         holder.button.setTextColor(holder.snack.mBtnTextColor);
         holder.snackView.setBackgroundColor(holder.snack.mBackgroundColor.getDefaultColor());
-        if(holder.snack.mHeight > 0)
+        if (holder.snack.mHeight > 0) {
             holder.snackView.getLayoutParams().height = this.getPxFromDp(holder.snack.mHeight);
+        }
 
+        if (holder.snack.mWidth > 0) {
+            holder.snackView.getLayoutParams().width = this.getPxFromDp(holder.snack.mWidth);
+        } else if (isConstantLayoutParams(holder)) {
+            holder.snackView.getLayoutParams().width = holder.snack.mWidth;
+        }
+
+        if (holder.snack.mMargins != null) {
+            if (holder.snackView.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+                setMargins(holder);
+            }
+        }
         if (showImmediately) {
             mInAnimationSet.setDuration(0);
         } else {
@@ -236,6 +247,17 @@ class SnackContainer extends FrameLayout {
         });
     }
 
+    private void setMargins(SnackHolder holder) {
+        MarginLayoutParams lp = (MarginLayoutParams) holder.snackView.getLayoutParams();
+        lp.setMargins(holder.snack.mMargins.getLeft(), holder.snack.mMargins.getTop(),
+                holder.snack.mMargins.getRight(), holder.snack.mMargins.getBottom());
+    }
+
+    private boolean isConstantLayoutParams(SnackHolder holder) {
+        return holder.snack.mWidth == ViewGroup.LayoutParams.MATCH_PARENT
+                || holder.snack.mWidth == ViewGroup.LayoutParams.WRAP_CONTENT;
+    }
+
     private void sendOnHide(SnackHolder snackHolder) {
         if (snackHolder.visListener != null) {
             snackHolder.visListener.onHide(mSnacks.size());
@@ -248,9 +270,9 @@ class SnackContainer extends FrameLayout {
         }
     }
 
-    /*
-     * Runnable stuff
-     */
+/*
+* Runnable stuff
+*/
 
     private final Runnable mHideRunnable = new Runnable() {
         @Override
@@ -261,9 +283,9 @@ class SnackContainer extends FrameLayout {
         }
     };
 
-    /*
-     * Restoration *
-     */
+/*
+* Restoration *
+*/
 
     public void restoreState(Bundle state, View v) {
         Parcelable[] messages = state.getParcelableArray(SAVED_MSGS);
@@ -308,13 +330,13 @@ class SnackContainer extends FrameLayout {
     }
 
     /*
-     * Helpers
-     */
+    * Helpers
+    */
     private int getPxFromDp(int dp) {
         Resources rs = getResources();
-        int pxConverter = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, rs.getDisplayMetrics());
+        int pxConverter =
+                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, rs.getDisplayMetrics());
         int px = pxConverter * dp;
         return px;
     }
-
 }

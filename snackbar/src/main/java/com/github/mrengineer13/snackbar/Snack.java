@@ -4,8 +4,6 @@ import android.content.res.ColorStateList;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.github.mrengineer13.snackbar.SnackBar.Style;
-
 class Snack implements Parcelable {
 
     final String mMessage;
@@ -24,9 +22,13 @@ class Snack implements Parcelable {
 
     final int mHeight;
 
-    Snack(String message, String actionMessage, int actionIcon,
-                 Parcelable token, short duration, ColorStateList textColor,
-                 ColorStateList backgroundColor, int height) {
+    final int mWidth;
+
+    final Margins mMargins;
+
+    Snack(String message, String actionMessage, int actionIcon, Parcelable token, short duration,
+          ColorStateList textColor, ColorStateList backgroundColor, int height, int width,
+          Margins margins) {
         mMessage = message;
         mActionMessage = actionMessage;
         mActionIcon = actionIcon;
@@ -35,7 +37,10 @@ class Snack implements Parcelable {
         mBtnTextColor = textColor;
         mBackgroundColor = backgroundColor;
         mHeight = height;
+        mWidth = width;
+        mMargins = margins;
     }
+
     // reads data from parcel
     Snack(Parcel p) {
         mMessage = p.readString();
@@ -46,6 +51,8 @@ class Snack implements Parcelable {
         mBtnTextColor = p.readParcelable(p.getClass().getClassLoader());
         mBackgroundColor = p.readParcelable(p.getClass().getClassLoader());
         mHeight = p.readInt();
+        mWidth = p.readInt();
+        mMargins = p.readParcelable(p.getClass().getClassLoader());
     }
 
     // writes data to parcel
@@ -58,6 +65,8 @@ class Snack implements Parcelable {
         out.writeParcelable(mBtnTextColor, 0);
         out.writeParcelable(mBackgroundColor, 0);
         out.writeInt(mHeight);
+        out.writeInt(mWidth);
+        out.writeParcelable(mMargins, 0);
     }
 
     public int describeContents() {

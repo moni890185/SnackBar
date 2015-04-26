@@ -1,17 +1,17 @@
 /*
- * Copyright (c) 2014 MrEngineer13
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+* Copyright (c) 2014 MrEngineer13
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 
 package com.github.mrengineer13.snackbar;
 
@@ -72,7 +72,8 @@ public class SnackBar {
     }
 
     public SnackBar(Context context, View v) {
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater =
+                (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.sb__snack_container, ((ViewGroup) v));
         View snackLayout = inflater.inflate(R.layout.sb__snack, ((ViewGroup) v), false);
         init((ViewGroup) v, snackLayout);
@@ -102,6 +103,8 @@ public class SnackBar {
         private ColorStateList mTextColor;
         private ColorStateList mBackgroundColor;
         private int mHeight;
+        private int mWidth;
+        private Margins mMargins;
 
         /**
          * Constructs a new SnackBar
@@ -251,6 +254,31 @@ public class SnackBar {
         }
 
         /**
+         * Sets the width for SnackBar
+         *
+         * @param width the width of SnackBar
+         * @return this builder
+         */
+        public Builder withSnackBarWidth(int width) {
+            mWidth = width;
+            return this;
+        }
+
+        /**
+         * Sets the width for SnackBar
+         *
+         * @param left left margin of SnackBar
+         * @param top top margin of SnackBar
+         * @param right right margin of SnackBar
+         * @param bottom bottom margin of SnackBar
+         * @return this builder
+         */
+        public Builder withSnackBarMargins(int left, int top, int right, int bottom) {
+            mMargins = new Margins(left, top, right, bottom);
+            return this;
+        }
+
+        /**
          * Sets the OnClickListener for the action button
          *
          * @param onClickListener the listener to inform of click events
@@ -267,7 +295,8 @@ public class SnackBar {
          * @param visibilityChangeListener the listener to inform of visibility changes
          * @return this builder
          */
-        public Builder withVisibilityChangeListener(OnVisibilityChangeListener visibilityChangeListener) {
+        public Builder withVisibilityChangeListener(
+                OnVisibilityChangeListener visibilityChangeListener) {
             mSnackBar.setOnVisibilityChangeListener(visibilityChangeListener);
             return this;
         }
@@ -278,14 +307,13 @@ public class SnackBar {
          * @return the SnackBar
          */
         public SnackBar show() {
-            Snack message = new Snack(mMessage,
-                    (mActionMessage != null ? mActionMessage.toUpperCase() : null),
-                    mActionIcon,
-                    mToken,
-                    mDuration,
-                    mTextColor != null ? mTextColor : getActionTextColor(Style.DEFAULT),
-                    mBackgroundColor != null ? mBackgroundColor : mContext.getResources().getColorStateList(R.color.sb__snack_bkgnd),
-                    mHeight != 0 ? mHeight : 0);
+            Snack message =
+                    new Snack(mMessage, (mActionMessage != null ? mActionMessage.toUpperCase() : null),
+                            mActionIcon, mToken, mDuration,
+                            mTextColor != null ? mTextColor : getActionTextColor(Style.DEFAULT),
+                            mBackgroundColor != null ? mBackgroundColor
+                                    : mContext.getResources().getColorStateList(R.color.sb__snack_bkgnd),
+                            mHeight != 0 ? mHeight : 0, mWidth != 0 ? mWidth : 0, mMargins);
 
             mSnackBar.showMessage(message);
 
@@ -318,7 +346,8 @@ public class SnackBar {
      * @return the height of the SnackBar
      */
     public int getHeight() {
-        mParentView.measure(View.MeasureSpec.makeMeasureSpec(mParentView.getWidth(), View.MeasureSpec.EXACTLY),
+        mParentView.measure(
+                View.MeasureSpec.makeMeasureSpec(mParentView.getWidth(), View.MeasureSpec.EXACTLY),
                 View.MeasureSpec.makeMeasureSpec(mParentView.getHeight(), View.MeasureSpec.AT_MOST));
         return mParentView.getMeasuredHeight();
     }
@@ -363,7 +392,6 @@ public class SnackBar {
 
     /**
      * Clears all of the queued messages
-     *
      */
     public void clear() {
         clear(true);
@@ -371,13 +399,11 @@ public class SnackBar {
 
     /**
      * Hides all snacks
-     *
      */
     public void hide() {
         mSnackContainer.hide();
         clear();
     }
-
 
     /**
      * All snacks will be restored using the view from this Snackbar
